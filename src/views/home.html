@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <title>Basic-url-shortner</title>
+  <head>
+      
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+    <style>
+      a:link {
+      color:Dodgerblue;
+      background-color: transparent;
+      text-decoration: none;
+    }
+    a:visited {
+      color: Dodgerblue;
+      background-color: transparent;
+      text-decoration: none;
+    }
+    a:hover {
+      color: rgb(103, 34, 112);
+      background-color: transparent;
+      text-decoration: underline;
+    }
+    a:active {
+      color: rgb(47, 0, 255);
+      background-color: transparent;
+      text-decoration: underline;
+    }
+      html, body {
+      display: flex;
+      justify-content: center;
+      font-family: Roboto, Arial, sans-serif;
+      font-size: 15px;
+      }
+      form {
+      border: 5px solid #f1f1f1;
+      }
+      input[type=text], input[type=password] {
+      width: 100%;
+      padding: 16px 8px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      }
+      .icon {
+      font-size: 110px;
+      display: flex;
+      justify-content: center;
+      color: #4286f4;
+      }
+      button {
+      background-color: #4286f4;
+      color: white;
+      padding: 14px 0;
+      margin: 10px 0;
+      border: none;
+      cursor: grab;
+      width: 48%;
+      }
+      h1 {
+      text-align:center;
+      font-size:18;
+      }
+      button:hover {
+      opacity: 0.8;
+      }
+      .formcontainer {
+      text-align: center;
+      margin: 24px 50px 12px;
+      }
+      .container {
+      padding: 16px 0;
+      text-align:left;
+      }
+      span.psw {
+      float: right;
+      padding-top: 0;
+      padding-right: 15px;
+      }
+      /* Change styles for span on extra small screens */
+      @media screen and (max-width: 300px) {
+      span.psw {
+      display: block;
+      float: none;
+      }
+    </style>
+  </head>
+  <body>
+    <form id = "inputs">
+      <h1>Basic URL Shortner</h1>
+      <div class="formcontainer">
+      <div class="container">
+        <label for="url"><strong>Base URl* in form(http://...)</strong></label>
+        <input type="text" placeholder="Enter Original  Link" id="url" required>
+        <label for="alias"><strong> Preferred Short Form for the Link</strong></label>
+        <input type="text" placeholder="Enter Preference if any " id="alias">
+        <button  onclick="generate()"><strong>Generate Short Link</strong></button>
+      <p id = "showAlias"></p>
+      <h3 id = "tip"></h3>
+      <p id = "shortlink"></p>
+      </div>
+    </form>
+    
+      <script> 
+        const baseSrtUrl2 = 'https://basic-url-shortner.herokuapp.com/';
+        const baseSrtUrl = 'http://localhost:3000/';
+        async function generate() {
+          event.preventDefault();
+            let form = document.getElementById("inputs");
+            let long_url = form.elements[0].value;
+            let alias = form.elements[1].value;
+
+            const data = {
+                "url":long_url
+            }
+            if(alias){
+                data["alias"] = alias;
+            }
+            
+            console.log(data);
+             const options = {
+                 method:"POST",
+                 mode:"cors",
+                 headers:{
+                     "Content-Type":"application/json"
+                 },
+                 body: JSON.stringify(data)
+             };
+             fetch(baseSrtUrl+'url',options).then(res=>res.json())
+             .then(response=>{
+                 console.log('success = ' ,response);
+                 var  newLink = response['db_response']["alias"];
+                 if(response["alias Status"]!="given"){
+                  document.getElementById("showAlias").innerHTML = "Here is the your alias \:  " + newLink;
+                 }else{
+                  document.getElementById("showAlias").innerHTML = "Confirmed Now you have this alias \: "+newLink;
+                 }
+                document.getElementById("tip").innerHTML = "use it like this in address bar ";
+                document.getElementById("shortlink").innerHTML = baseSrtUrl2.concat(newLink);
+             }).catch(err =>{
+                 console.log('Error = ',err);
+             });
+        }
+      </script>
+      <a href= "https://github.com/Gourav-mlv">Created By Gourav Malviya using express - NodeJS</a>
+      <h6>Note : All Databases here are transparent so, please refrain from shortening "Personal Links" or you might welcome unwanted visitors.</h6>
+  </body>
+</html>
